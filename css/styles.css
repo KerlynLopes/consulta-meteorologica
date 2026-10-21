@@ -1,0 +1,113 @@
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background-color: #EAF4FF;
+    color: #174A7E;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+h1 {
+    font-size: 32px;
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+form {
+    width: 100%;
+    max-width: 450px;
+    margin-top: 24px;
+}
+
+#cidade {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #C8DDF2;
+    border-radius: 10px;
+    font-size: 16px;
+    outline: none;
+}
+
+#cidade:focus {
+    border-color: #287BC1;
+}
+
+#sugestoes-cidades {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#temperatura {
+    width: 100%;
+    max-width: 450px;
+    margin-top: 24px;
+    padding: 24px;
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 5px 20px #174A7E12;
+    font-size: 18px;
+    text-align: center;
+}
+
+
+/* Grade dos próximos dias */
+.previsao-dias {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 16px;
+    width: 100%;
+}
+
+/* Cartão de cada dia */
+.cartao-dia {
+    background-color: #F2F8FF;
+    border: 1px solid #D5E6F7;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    min-width: 0;
+}
+
+.cartao-dia h3 {
+    color: #174A7E;
+    font-size: 16px;
+    margin-top: 0;
+    text-transform: capitalize;
+}
+
+
+.cartao-dia p {
+    color: #477BAF;
+    font-size: 14px;
+}
+
+
+@media (max-width: 800px) {
+    .previsao-dias {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 25px;
+    }
+
+    body {
+        padding: 16px;
+    }
+
+        .previsao-dias {
+        grid-template-columns: 1fr;
+    }
+}
