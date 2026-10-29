@@ -1,113 +1,249 @@
-
-* {
-    box-sizing: border-box;
-}
-
 body {
     margin: 0;
     min-height: 100vh;
     font-family: Arial, sans-serif;
-    background-color: #EAF4FF;
-    color: #174A7E;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
+    color: white;
+    background-image: url("/images/background.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
-h1 {
-    font-size: 32px;
+/* Cabeçalho */
+
+.cabecalho {
+    padding: 20px 8% 10px;
     text-align: center;
-    margin-bottom: 12px;
 }
 
-form {
+.cabecalho h1 {
+    margin: 0;
+    font-size: 34px;
+    font-weight: 800;
+    color: #ffffff;
+    text-shadow: 0 3px 8px rgba(0, 25, 55, 0.8);
+}
+
+/* Conteúdo principal */
+
+main {
     width: 100%;
-    max-width: 450px;
-    margin-top: 24px;
+    max-width: 800px;
+    min-height: auto;
+    margin: 0 auto;
+    padding: 15px 20px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+/* Apresentação */
+
+.apresentacao h2 {
+    margin-bottom: 10px;
+    font-size: 30px;
+    color: #ffffff;
+    font-weight: 700;
+    text-shadow: 0 3px 8px rgba(0, 25, 55, 0.8);
+}
+
+.apresentacao p {
+    margin-bottom: 28px;
+    font-size: 16px;
+    color: #ffffff;
+    text-shadow: 0 2px 6px rgba(0, 25, 55, 0.9);
+}
+
+/* Caixa de pesquisa */
+
+.busca {
+    position: relative;
+    display: flex;
+    align-items: center;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 8px 10px 8px 18px;
+    background-color: white;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(0, 45, 90, 0.18);
+}
+
+.icone-localizacao {
+    font-size: 19px;
 }
 
 #cidade {
-    width: 100%;
-    padding: 15px;
-    border: 1px solid #C8DDF2;
-    border-radius: 10px;
-    font-size: 16px;
+    flex: 1;
+    min-width: 0;
+    padding: 13px 12px;
+    border: none;
     outline: none;
+    background: transparent;
+    color: #244866;
+    font-size: 15px;
 }
 
-#cidade:focus {
-    border-color: #287BC1;
+#cidade::placeholder {
+    color: #8ba5ba;
 }
+
+/* Sugestões de cidades */
 
 #sugestoes-cidades {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-#temperatura {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    z-index: 10;
     width: 100%;
-    max-width: 450px;
-    margin-top: 24px;
-    padding: 24px;
-    background-color: white;
-    border-radius: 16px;
-    box-shadow: 0 5px 20px #174A7E12;
-    font-size: 18px;
-    text-align: center;
+    max-height: 250px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-align: left;
+    background: white;
+    color: #244866;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 45, 90, 0.18);
 }
 
+#sugestoes-cidades li {
+    padding: 14px 18px;
+    cursor: pointer;
+}
 
-/* Grade dos próximos dias */
+#sugestoes-cidades li:hover {
+    background-color: #eaf6ff;
+}
+
+/* Favoritos */
+
+.favoritos-container {
+    margin: 35px auto;
+}
+
+.favoritos-container h2 {
+    font-size: 18px;
+    color: white;
+    text-shadow: 0 2px 8px rgba(0, 45, 90, 0.3);
+}
+
+#lista-favoritos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.botao-cidade-favorita {
+    padding: 10px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 25px;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #24679b;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.botao-cidade-favorita:hover {
+    background-color: white;
+    transform: translateY(-2px);
+}
+
+/* Previsão */
+
+#temperatura,
+#previsao {
+    margin-top: 30px;
+}
+
+#temperatura h1,
+#previsao h2 {
+    color: white;
+    text-shadow: 0 2px 8px rgba(0, 45, 90, 0.3);
+}
+
 .previsao-dias {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 16px;
-    width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
 }
 
-/* Cartão de cada dia */
 .cartao-dia {
-    background-color: #F2F8FF;
-    border: 1px solid #D5E6F7;
-    border-radius: 12px;
-    padding: 16px;
-    text-align: center;
-    min-width: 0;
+    padding: 18px 12px;
+
+    background-color: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 16px;
+
+    color: white;
+    box-shadow: 0 6px 20px rgba(0, 45, 90, 0.12);
 }
 
 .cartao-dia h3 {
-    color: #174A7E;
-    font-size: 16px;
-    margin-top: 0;
-    text-transform: capitalize;
+    color: white;
 }
-
 
 .cartao-dia p {
-    color: #477BAF;
-    font-size: 14px;
+    color: white;
 }
 
+.icone-clima {
+    width: 75px;
+    height: 75px;
+    object-fit: contain;
+}
 
-@media (max-width: 800px) {
-    .previsao-dias {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+/* Botão de favoritar */
+
+#botao-favoritar {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 20px;
+    background-color: white;
+    color: #24679b;
+    cursor: pointer;
+}
+
+/* Celulares */
+
+@media (max-width: 600px) {
+    .cabecalho {
+        padding: 22px 15px;
     }
-}
 
-@media (max-width: 480px) {
-    h1 {
+    .cabecalho h1 {
+        font-size: 27px;
+    }
+
+    main {
+        padding: 30px 18px;
+    }
+
+    .apresentacao h2 {
         font-size: 25px;
     }
 
-    body {
-        padding: 16px;
+    .apresentacao p {
+        font-size: 14px;
+        line-height: 1.5;
     }
 
-        .previsao-dias {
-        grid-template-columns: 1fr;
+    .busca {
+        padding-left: 12px;
+    }
+
+    #cidade {
+        font-size: 14px;
+    }
+
+    .previsao-dias {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }

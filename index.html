@@ -1,20 +1,49 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clima & Céu</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="/css/styles.css">
     <script src="/js/script.js" defer></script>
 </head>
 <body>
-    <h1>CONSULTE A PREVISÃO DO TEMPO AQUI!</h1>
-    <form id="busca-cidade">
-        <input type="text" id="cidade" placeholder="Digite o nome da cidade" autocomplete="off" required>
+<header class="cabecalho">
+    <h1>Clima & Céu</h1>
+</header>
 
-         <ul id="sugestoes-cidades"></ul>
+<main>
+    <section class="apresentacao">
+        <h2>Encontre sua cidade</h2>
 
-    </form>
-    <p id="temperatura"></p>
+        <p>Descubra a previsão do tempo e planeje seus dias.</p>
+
+        <div class="busca">
+            <span class="icone-localizacao">📍</span>
+
+            <input
+                type="text"
+                id="cidade"
+                placeholder="Digite o nome da sua cidade..."
+                autocomplete="off"
+            >
+
+            <ul id="sugestoes-cidades"></ul>
+        </div>
+    </section>
+
+    <section class="favoritos-container">
+        <h2>Suas cidades favoritas ♡</h2>
+        <div id="lista-favoritos"></div>
+    </section>
+
+    <section id="temperatura"></section>
+
+    <section id="previsao"></section>
+</main>
+```
+
+
 </body>
 </html>

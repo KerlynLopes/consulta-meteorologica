@@ -1,11 +1,13 @@
-
 let campoCidade = document.querySelector("#cidade");
 let campoTemperatura = document.querySelector("#temperatura");
 let listaSugestoes = document.querySelector("#sugestoes-cidades");
+let campoPrevisao = document.querySelector("#previsao");
+let listaFavoritos = document.querySelector("#lista-favoritos");
 
 let temporizador;
 let cidadeSelecionada = null;
 
+//Buscar cidade
 
 campoCidade.addEventListener("input", function () {
     clearTimeout(temporizador);
@@ -16,10 +18,13 @@ campoCidade.addEventListener("input", function () {
     let nomeCidade = campoCidade.value.trim();
 
     if (nomeCidade.length < 2) {
+        campoTemperatura.textContent = "";
+        campoPrevisao.replaceChildren();
         return;
     }
 
     campoTemperatura.textContent = "Buscando a sua cidade...";
+    campoPrevisao.replaceChildren();
 
     temporizador = setTimeout(function () {
         let url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(nomeCidade)}&count=10&language=pt&countryCode=BR`;
@@ -35,7 +40,10 @@ campoCidade.addEventListener("input", function () {
             .then(function (dados) {
                 listaSugestoes.replaceChildren();
 
-                if (!dados.results) {
+                if (!dados.results || dados.results.length === 0) {
+                    campoTemperatura.textContent =
+                        "Nenhuma cidade encontrada.";
+
                     return;
                 }
 
@@ -50,84 +58,14 @@ campoCidade.addEventListener("input", function () {
                     opcao.addEventListener("click", function () {
                         campoCidade.value = cidade.name;
                         cidadeSelecionada = cidade;
+
                         listaSugestoes.replaceChildren();
 
-                        let latitude = cidadeSelecionada.latitude;
-                        let longitude = cidadeSelecionada.longitude;
-
-                        let urlClima = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=5`;
-
-                        campoTemperatura.textContent = "Buscando a previsão do tempo...";
-
-                        fetch(urlClima, { method: "GET" })
-                            .then(function (respostaClima) {
-                                if (!respostaClima.ok) {
-                                    throw new Error(`Erro HTTP: ${respostaClima.status}`);
-                                }
-
-                                return respostaClima.json();
-                            })
-                            .then(function (dadosClima) {
-
-                                campoTemperatura.replaceChildren();
-
-                                let temperaturaAtual = document.createElement("p");
-
-                                temperaturaAtual.textContent =
-                                    "Temperatura atual: " +
-                                    dadosClima.current.temperature_2m +
-                                    " °C";
-
-                                campoTemperatura.appendChild(temperaturaAtual);
-
-                                let tituloPrevisao = document.createElement("h2");
-                                tituloPrevisao.textContent = "Próximos dias";
-
-                                let previsaoDias = document.createElement("div");
-                                previsaoDias.classList.add("previsao-dias");
-
-                                campoTemperatura.appendChild(tituloPrevisao);
-                                campoTemperatura.appendChild(previsaoDias);
-
-                                campoTemperatura.appendChild(tituloPrevisao);
-
-                                for (let i = 0; i < dadosClima.daily.time.length; i++) {
-                                    let dia = document.createElement("div");
-                                    dia.classList.add("cartao-dia");
-
-                                    let data = document.createElement("h3");
-                                    data.textContent = new Date(
-                                        dadosClima.daily.time[i] + "T12:00:00"
-                                    ).toLocaleDateString("pt-BR", {
-                                        weekday: "long",
-                                        day: "2-digit",
-                                        month: "2-digit"
-                                    });
-
-                                    let maxima = document.createElement("p");
-                                    maxima.textContent =
-                                        "Máxima: " +
-                                        dadosClima.daily.temperature_2m_max[i] +
-                                        " °C";
-
-                                    let minima = document.createElement("p");
-                                    minima.textContent =
-                                        "Mínima: " +
-                                        dadosClima.daily.temperature_2m_min[i] +
-                                        " °C";
-
-                                    dia.appendChild(data);
-                                    dia.appendChild(maxima);
-                                    dia.appendChild(minima);
-
-                                    previsaoDias.appendChild(dia);
-                                }
-
-                            })
-                            .catch(function (erro) {
-                                campoTemperatura.textContent =
-                                    "Não foi possível consultar a temperatura.";
-                            });
+                        consultarClima(
+                            cidade.latitude,
+                            cidade.longitude,
+                            cidade
+                        );
                     });
 
                     listaSugestoes.appendChild(opcao);
@@ -135,6 +73,312 @@ campoCidade.addEventListener("input", function () {
             })
             .catch(function (erro) {
                 listaSugestoes.replaceChildren();
+
+                campoTemperatura.textContent =
+                    "Não foi possível buscar as cidades.";
             });
     }, 300);
 });
+
+
+// ESCOLHER ÍCONE DO CLIMA
+
+function obterIconeClima(codigo) {
+
+    /*const codigosClima=["ceu-limpo.png",
+         "poucas-nuvens.png",
+          "parcialmente-nublado.png",
+          "nublado.png"]
+          codigosClima[45]="neblina.png"
+          codigosClima[48]="neblina.png"
+          codigosClima[51]="garoa.png"
+          codigosClima[57]="garoa.png"
+          codigosClima[61]="chuva-forte.png"
+          codigosClima[67]="chuva-forte.png"
+ 
+        return codigosClima[codigo];*/
+
+    if (codigo === 0) {
+        return "ceu-limpo.png";
+    }
+
+    if (codigo === 1) {
+        return "poucas-nuvens.png";
+    }
+
+    if (codigo === 2) {
+        return "parcialmente-nublado.png";
+    }
+
+    if (codigo === 3) {
+        return "nublado.png";
+    }
+
+    if (codigo === 45 || codigo === 48) {
+        return "neblina.png";
+    }
+
+    if (codigo >= 51 && codigo <= 57) {
+        return "garoa.png";
+    }
+
+    if (codigo >= 61 && codigo <= 67) {
+        if (codigo === 65 || codigo === 67) {
+            return "chuva-forte.png";
+        }
+
+        return "chuva-moderada.png";
+    }
+
+    if (codigo >= 71 && codigo <= 77) {
+        return "neve.png";
+    }
+
+    if (codigo >= 80 && codigo <= 82) {
+        if (codigo === 82) {
+            return "chuva-forte.png";
+        }
+
+        return "chuva-moderada.png";
+    }
+
+    if (codigo === 85 || codigo === 86) {
+        return "neve.png";
+    }
+
+    if (codigo >= 95 && codigo <= 99) {
+        return "tempestade.png";
+    }
+
+    return "parcialmente-nublado.png";
+}
+
+
+// FAVORITOS
+
+let favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
+
+
+function mostrarFavoritos() {
+    listaFavoritos.replaceChildren();
+
+    favoritos.forEach(function (cidade) {
+        let botaoCidade = document.createElement("button");
+
+        botaoCidade.textContent = cidade.nome;
+        botaoCidade.type = "button";
+        botaoCidade.classList.add("botao-cidade-favorita");
+
+        botaoCidade.addEventListener("click", function () {
+            campoCidade.value = cidade.nome;
+
+            consultarClima(
+                cidade.latitude,
+                cidade.longitude,
+                cidade
+            );
+        });
+
+        listaFavoritos.appendChild(botaoCidade);
+    });
+}
+
+
+function salvarFavoritos() {
+    localStorage.setItem("favoritos", JSON.stringify(favoritos));
+}
+
+mostrarFavoritos();
+
+// CONSULTAR E MOSTRAR A PREVISÃO
+
+function consultarClima(latitude, longitude, cidade) {
+
+    let urlClima = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=5`;
+
+    campoTemperatura.textContent = "Buscando a previsão do tempo...";
+    campoPrevisao.replaceChildren();
+
+    fetch(urlClima, { method: "GET" })
+        .then(function (respostaClima) {
+
+            if (!respostaClima.ok) {
+                throw new Error(`Erro HTTP: ${respostaClima.status}`);
+            }
+
+            return respostaClima.json();
+        })
+        .then(function (dadosClima) {
+
+            campoTemperatura.replaceChildren();
+            campoPrevisao.replaceChildren();
+
+            // Nome da cidade
+            let tituloCidade = document.createElement("h1");
+
+            tituloCidade.textContent = cidade.name || cidade.nome;
+
+            campoTemperatura.appendChild(tituloCidade);
+
+            // BOTÃO FAVORITAR
+
+            let botaoFavoritar = document.createElement("button");
+
+            botaoFavoritar.type = "button";
+            botaoFavoritar.id = "botao-favoritar";
+
+            let jaFavoritada = favoritos.some(function (favorita) {
+                return favorita.latitude === latitude &&
+                    favorita.longitude === longitude;
+            });
+
+            if (jaFavoritada) {
+                botaoFavoritar.textContent = "Já está nos favoritos! ♥";
+            } else {
+                botaoFavoritar.textContent = "Favoritar ♡";
+            }
+
+            campoTemperatura.appendChild(botaoFavoritar);
+
+            botaoFavoritar.addEventListener("click", function () {
+
+                let jaExiste = favoritos.some(function (favorita) {
+                    return favorita.latitude === latitude &&
+                        favorita.longitude === longitude;
+                });
+
+                if (jaExiste) {
+                    botaoFavoritar.textContent =
+                        "Já está nos favoritos!";
+
+                    return;
+                }
+
+                let nomeCidade = cidade.name || cidade.nome;
+
+                favoritos.push({
+                    nome: nomeCidade,
+                    latitude: latitude,
+                    longitude: longitude
+                });
+
+                salvarFavoritos();
+                mostrarFavoritos();
+
+                botaoFavoritar.textContent = "Favoritado!";
+            });
+
+
+            // TEMPERATURA ATUAL
+
+            let temperaturaAtual = document.createElement("p");
+
+            temperaturaAtual.textContent =
+                "Temperatura atual: " +
+                dadosClima.current.temperature_2m +
+                " °C";
+
+            campoTemperatura.appendChild(temperaturaAtual);
+
+
+            // ÍCONE DO CLIMA ATUAL
+
+            let iconeAtual = document.createElement("img");
+
+            iconeAtual.classList.add("icone-clima");
+
+            iconeAtual.src =
+                "./images/" +
+                obterIconeClima(dadosClima.current.weather_code);
+
+            iconeAtual.alt = "Condição meteorológica atual";
+
+            campoTemperatura.appendChild(iconeAtual);
+
+            // TÍTULO DA PREVISÃO
+
+            let tituloPrevisao = document.createElement("h2");
+
+            tituloPrevisao.textContent = "Próximos dias";
+
+            campoPrevisao.appendChild(tituloPrevisao);
+
+
+            // GRADE DOS DIAS
+
+            let previsaoDias = document.createElement("div");
+
+            previsaoDias.classList.add("previsao-dias");
+
+            campoPrevisao.appendChild(previsaoDias);
+
+
+            // CARTÕES DA PREVISÃO
+
+            for (let i = 1; i < dadosClima.daily.time.length; i++) {
+
+                let dia = document.createElement("div");
+
+                dia.classList.add("cartao-dia");
+
+                // Data
+
+                let data = document.createElement("h3");
+
+                data.textContent = new Date(
+                    dadosClima.daily.time[i] + "T12:00:00"
+                ).toLocaleDateString("pt-BR", {
+                    weekday: "long",
+                    day: "2-digit",
+                    month: "2-digit"
+                });
+
+                // Ícone do dia
+
+                let iconeDia = document.createElement("img");
+
+                iconeDia.classList.add("icone-clima");
+
+                iconeDia.src =
+                    "./images/" +
+                    obterIconeClima(dadosClima.daily.weather_code[i]);
+
+                iconeDia.alt = "Previsão do tempo";
+
+                // Temperatura máxima
+
+                let maxima = document.createElement("p");
+
+                maxima.textContent =
+                    "Máxima: " +
+                    dadosClima.daily.temperature_2m_max[i] +
+                    " °C";
+
+                // Temperatura mínima
+
+                let minima = document.createElement("p");
+
+                minima.textContent =
+                    "Mínima: " +
+                    dadosClima.daily.temperature_2m_min[i] +
+                    " °C";
+
+                // Adicionar elementos ao cartão
+
+                dia.appendChild(data);
+                dia.appendChild(iconeDia);
+                dia.appendChild(maxima);
+                dia.appendChild(minima);
+
+                previsaoDias.appendChild(dia);
+            }
+
+        })
+        .catch(function (erro) {
+
+            campoTemperatura.textContent =
+                "Não foi possível consultar a temperatura.";
+
+            campoPrevisao.replaceChildren();
+        });
+}
