@@ -80,77 +80,49 @@ campoCidade.addEventListener("input", function () {
     }, 300);
 });
 
-
 // ESCOLHER ÍCONE DO CLIMA
 
 function obterIconeClima(codigo) {
 
-    /*const codigosClima=["ceu-limpo.png",
-         "poucas-nuvens.png",
-          "parcialmente-nublado.png",
-          "nublado.png"]
-          codigosClima[45]="neblina.png"
-          codigosClima[48]="neblina.png"
-          codigosClima[51]="garoa.png"
-          codigosClima[57]="garoa.png"
-          codigosClima[61]="chuva-forte.png"
-          codigosClima[67]="chuva-forte.png"
- 
-        return codigosClima[codigo];*/
+    const codigosClima = [];
 
-    if (codigo === 0) {
-        return "ceu-limpo.png";
-    }
+    codigosClima[0] = "ceu-limpo.png";
+    codigosClima[1] = "poucas-nuvens.png";
+    codigosClima[2] = "parcialmente-nublado.png";
+    codigosClima[3] = "nublado.png";
 
-    if (codigo === 1) {
-        return "poucas-nuvens.png";
-    }
+    codigosClima[45] = "neblina.png";
+    codigosClima[48] = "neblina.png";
 
-    if (codigo === 2) {
-        return "parcialmente-nublado.png";
-    }
+    codigosClima[51] = "garoa.png";
+    codigosClima[53] = "garoa.png";
+    codigosClima[55] = "garoa.png";
+    codigosClima[56] = "garoa.png";
+    codigosClima[57] = "garoa.png";
 
-    if (codigo === 3) {
-        return "nublado.png";
-    }
+    codigosClima[61] = "chuva-moderada.png";
+    codigosClima[63] = "chuva-moderada.png";
+    codigosClima[65] = "chuva-forte.png";
+    codigosClima[66] = "chuva-moderada.png";
+    codigosClima[67] = "chuva-forte.png";
 
-    if (codigo === 45 || codigo === 48) {
-        return "neblina.png";
-    }
+    codigosClima[71] = "neve.png";
+    codigosClima[73] = "neve.png";
+    codigosClima[75] = "neve.png";
+    codigosClima[77] = "neve.png";
 
-    if (codigo >= 51 && codigo <= 57) {
-        return "garoa.png";
-    }
+    codigosClima[80] = "chuva-moderada.png";
+    codigosClima[81] = "chuva-moderada.png";
+    codigosClima[82] = "chuva-forte.png";
 
-    if (codigo >= 61 && codigo <= 67) {
-        if (codigo === 65 || codigo === 67) {
-            return "chuva-forte.png";
-        }
+    codigosClima[85] = "neve.png";
+    codigosClima[86] = "neve.png";
 
-        return "chuva-moderada.png";
-    }
+    codigosClima[95] = "tempestade.png";
+    codigosClima[96] = "tempestade.png";
+    codigosClima[99] = "tempestade.png";
 
-    if (codigo >= 71 && codigo <= 77) {
-        return "neve.png";
-    }
-
-    if (codigo >= 80 && codigo <= 82) {
-        if (codigo === 82) {
-            return "chuva-forte.png";
-        }
-
-        return "chuva-moderada.png";
-    }
-
-    if (codigo === 85 || codigo === 86) {
-        return "neve.png";
-    }
-
-    if (codigo >= 95 && codigo <= 99) {
-        return "tempestade.png";
-    }
-
-    return "parcialmente-nublado.png";
+    return codigosClima[codigo] || "parcialmente-nublado.png";
 }
 
 
