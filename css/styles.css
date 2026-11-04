@@ -1,7 +1,6 @@
 body {
     margin: 0;
      display: flex;
-    justify-content: center;
     align-items: center;
     min-height: 100vh;
     font-family: Arial, sans-serif;
@@ -16,7 +15,7 @@ body {
 }
 
 .cabecalho {
-    padding: 20px 8% 10px;
+    padding: 45px 8% 10px;
     text-align: center;
 }
 
@@ -219,6 +218,7 @@ footer {
     font-size: 14px;
     color: white;
     text-shadow: 0 2px 6px rgba(0, 25, 55, 0.9);
+    margin-top: auto;
 }
 
 /* Celulares */
